@@ -16,14 +16,17 @@ def about(request):
 
 def list_page(request, pk):
     """View page the wishlist."""
+
+    wishlist = get_object_or_404(WishList, pk=pk)
+
     if request.method == 'POST':
         form = ProductForm(request.POST)
-        form.create_at = datetime.now()
-        form.save()
-        print(form.pk, form.title)
-    else:
+        instance_product = form.save()
+
+        wishlist.product.add(instance_product)
+        wishlist.save()
+    elif request.method == 'GET':
         form = ProductForm()
-        wishlist = get_object_or_404(WishList, pk=pk)
 
     return render(
         request,
